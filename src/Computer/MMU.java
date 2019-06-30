@@ -12,6 +12,7 @@ public class MMU {
 
     //Space using dynamic array
 
+
     Scanner s = new Scanner(System.in);
 
     public char[] getRAM() {
@@ -37,7 +38,7 @@ public class MMU {
     //these are the only functions that are going to be working on the ram
     public void write(char[] code, int address) {
         for (int i = 0; i < code.length; i++) {
-            RAM[address + i] += code[i];
+            RAM[address + i] = code[i];
 
         }
     }
