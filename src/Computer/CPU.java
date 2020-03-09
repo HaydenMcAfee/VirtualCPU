@@ -26,18 +26,18 @@ public class CPU {
     //Loop {
     //inpt buffer is actually at 00DC
     public char [] fetch (MMU mmu, int address){
-        char[] word = mmu.read(address);
+        char[] word = mmu.readRAM(address);
         pCounter = pCounter + 8;
         return word;
     }
 
     //Translate that we wrote from earlier
     public String decode (char [] hexcode){
-            return hexToBinary(hexcode);
+            return utils.hexToBinary(hexcode);
         }
 
     public void execute (MMU mmu, String binaryInstruction){
-        String opCode = getOpCode(binaryInstruction);
+        String opCode = utils.getOpCode(binaryInstruction);
         switch (opCode) {
             case "000000": execRD(mmu, binaryInstruction);
             break;
@@ -69,44 +69,44 @@ public class CPU {
         String bReg = binaryInstruction.substring(8,12);
         String dReg = binaryInstruction.substring(12,16);
         String address = binaryInstruction.substring(16,32);
-        int addressInt = toDecimal(address);
-        int dRegInt = toDecimal(dReg);
+        int addressInt = utils.toDecimal(address);
+        int dRegInt = utils.toDecimal(dReg);
         if (dRegInt != 0) {
             switch (dRegInt) {
-                case 1:  addressInt = toDecimal(hexToBinary(getR1()));
+                case 1:  addressInt = utils.toDecimal(utils.hexToBinary(getR1()));
                     break;
-                case 2:  addressInt = toDecimal(hexToBinary(getR2()));
+                case 2:  addressInt = utils.toDecimal(utils.hexToBinary(getR2()));
                     break;
-                case 3:  addressInt = toDecimal(hexToBinary(getR3()));
+                case 3:  addressInt = utils.toDecimal(utils.hexToBinary(getR3()));
                     break;
-                case 4:  addressInt = toDecimal(hexToBinary(getR4()));
+                case 4:  addressInt = utils.toDecimal(utils.hexToBinary(getR4()));
                     break;
-                case 5:  addressInt = toDecimal(hexToBinary(getR5()));
+                case 5:  addressInt = utils.toDecimal(utils.hexToBinary(getR5()));
                     break;
-                case 6:  addressInt = toDecimal(hexToBinary(getR6()));
+                case 6:  addressInt = utils.toDecimal(utils.hexToBinary(getR6()));
                     break;
-                case 7:  addressInt = toDecimal(hexToBinary(getR7()));
+                case 7:  addressInt = utils.toDecimal(utils.hexToBinary(getR7()));
                     break;
-                case 8:  addressInt = toDecimal(hexToBinary(getR8()));
+                case 8:  addressInt = utils.toDecimal(utils.hexToBinary(getR8()));
                     break;
-                case 9:  addressInt = toDecimal(hexToBinary(getR9()));
+                case 9:  addressInt = utils.toDecimal(utils.hexToBinary(getR9()));
                     break;
-                case 10:  addressInt = toDecimal(hexToBinary(getR10()));
+                case 10:  addressInt = utils.toDecimal(utils.hexToBinary(getR10()));
                     break;
-                case 11:  addressInt = toDecimal(hexToBinary(getR11()));
+                case 11:  addressInt = utils.toDecimal(utils.hexToBinary(getR11()));
                     break;
-                case 12:  addressInt = toDecimal(hexToBinary(getR12()));
+                case 12:  addressInt = utils.toDecimal(utils.hexToBinary(getR12()));
                     break;
-                case 13:  addressInt = toDecimal(hexToBinary(getR13()));
+                case 13:  addressInt = utils.toDecimal(utils.hexToBinary(getR13()));
                     break;
-                case 14:  addressInt = toDecimal(hexToBinary(getR14()));
+                case 14:  addressInt = utils.toDecimal(utils.hexToBinary(getR14()));
                     break;
-                case 15:  addressInt = toDecimal(hexToBinary(getR15()));
+                case 15:  addressInt = utils.toDecimal(utils.hexToBinary(getR15()));
                     break;
             }
         }
-        int bRegInt = toDecimal(bReg);
-        setR0(mmu.read((addressInt*2)));
+        int bRegInt = utils.toDecimal(bReg);
+        setR0(mmu.readRAM((addressInt*2)));
         switch (bRegInt) {
             case 1:  setR1(getR0());
                 break;
@@ -144,16 +144,16 @@ public class CPU {
 
     public void execWR(MMU mmu, String binaryInstructions) {
         String address = binaryInstructions.substring(16,32);//retrieves location of output
-        int addressInt = toDecimal(address);//Stores address as an int
-        mmu.store(getR0(),addressInt*2); //stores contents of accumulator
+        int addressInt = utils.toDecimal(address);//Stores address as an int
+        mmu.storeRAM(getR0(),addressInt*2); //stores contents of accumulator
     }
 
     public void execST(MMU mmu, String binaryInstruction) {
 
         String bReg = binaryInstruction.substring(8, 12); //Stores the number of the base register
-        int bRegInt = toDecimal(bReg); //Stores int value of destination register
+        int bRegInt = utils.toDecimal(bReg); //Stores int value of destination register
         String dReg = binaryInstruction.substring(12,16); //Stores register number of destination register
-        int dRegInt = toDecimal(dReg); //Stores int value of destination
+        int dRegInt = utils.toDecimal(dReg); //Stores int value of destination
         char[] data = new char[8]; //creation of store for the data inside the base register
         char[] address = new char[8];
         switch(bRegInt)
@@ -225,16 +225,16 @@ public class CPU {
             case 15:  address = getR15();
                 break;
         }
-        mmu.store(data, toDecimal(hexToBinary(address))*2);
+        mmu.storeRAM(data, utils.toDecimal(utils.hexToBinary(address))*2);
     }
 
     public void execLW(MMU mmu, String binaryInstruction) {
         String bReg = binaryInstruction.substring(8, 12); //Stores the number of the base register
-        int bRegInt = toDecimal(bReg); //Stores int value of destination register
+        int bRegInt = utils.toDecimal(bReg); //Stores int value of destination register
         String dReg = binaryInstruction.substring(12,16); //Stores register number of destination register
-        int dRegInt = toDecimal(dReg); //Stores int value of destination
+        int dRegInt = utils.toDecimal(dReg); //Stores int value of destination
         String offset = binaryInstruction.substring(16,32);
-        binaryToHex(offset);
+        utils.binaryToHex(offset);
         char[] data; //creation of store for the data inside the base register
         char[] address = new char[8];
         switch (bRegInt) {
@@ -271,8 +271,8 @@ public class CPU {
             case 15:  address = getR15();
                 break;
         }
-        int addressInt = toDecimal(hexToBinary(address));
-        data = mmu.read(addressInt*2);
+        int addressInt = utils.toDecimal(utils.hexToBinary(address));
+        data = mmu.readRAM(addressInt*2);
         switch (dRegInt) {
             case 0: setR0(data);
                 break;
@@ -312,11 +312,11 @@ public class CPU {
 
     public void execADD(MMU mmu, String binaryInstruction) {
         String sReg1 = binaryInstruction.substring(8, 12);
-        int sReg1Int = toDecimal(sReg1);
+        int sReg1Int = utils.toDecimal(sReg1);
         String sReg2 = binaryInstruction.substring(12, 16);
-        int sReg2Int = toDecimal(sReg2);
+        int sReg2Int = utils.toDecimal(sReg2);
         String dReg = binaryInstruction.substring(16, 20);
-        int dRegInt = toDecimal(dReg);
+        int dRegInt = utils.toDecimal(dReg);
         char [] data = new char[8];
         switch(dRegInt)
         {
@@ -353,8 +353,8 @@ public class CPU {
             case 15: data = getR15();
                 break;
         }
-        dRegInt = toDecimal(hexToBinary(data));
-        int repData = dRegInt + toDecimal(hexToBinary(getR0()));
+        dRegInt = utils.toDecimal(utils.hexToBinary(data));
+        int repData = dRegInt + utils.toDecimal(utils.hexToBinary(getR0()));
         String newHexString=Integer.toHexString(repData); //new data in a hex String to be put into reg10
         newHexString = newHexString.toUpperCase(); //changes to upper case for consistency
         int counter = 0;
@@ -372,10 +372,10 @@ public class CPU {
 
     public void execMOVI (String binaryInstruction) {
         String dReg = binaryInstruction.substring(12,16);
-        int dRegInt = toDecimal(dReg);
+        int dRegInt = utils.toDecimal(dReg);
         String address = binaryInstruction.substring(16,32);
-        int addressInt = toDecimal(address);
-        String addressHex = binaryToHex(address);
+        int addressInt = utils.toDecimal(address);
+        String addressHex = utils.binaryToHex(address);
         char[] data = new char[8];
         int counter = 0;
         for (int i = 0; i < 8; i++) {
@@ -427,45 +427,45 @@ public class CPU {
         String reg2Binary = binaryInstruction.substring(12, 16);
         String address = binaryInstruction.substring(16, 32);
 
-        int reg2Decimal= toDecimal(reg2Binary);
-        int addressDecimal=toDecimal(address);
+        int reg2Decimal= utils.toDecimal(reg2Binary);
+        int addressDecimal=utils.toDecimal(address);
 
-        // String addressHex = binaryToHex(address);
+        // String addressHex = utils.binaryToHex(address);
 
         int regData=0;
 
         switch(reg2Decimal){
-            case 0: regData= toDecimal(hexToBinary(getR0()));
+            case 0: regData= utils.toDecimal(utils.hexToBinary(getR0()));
                 break;
-            case 1: regData=toDecimal(hexToBinary(getR1()));
+            case 1: regData=utils.toDecimal(utils.hexToBinary(getR1()));
                 break;
-            case 2: regData=toDecimal(hexToBinary(getR2()));
+            case 2: regData=utils.toDecimal(utils.hexToBinary(getR2()));
                 break;
-            case 3:  regData= toDecimal(hexToBinary(getR3()));
+            case 3:  regData= utils.toDecimal(utils.hexToBinary(getR3()));
                 break;
-            case 4: regData=toDecimal(hexToBinary(getR4()));
+            case 4: regData=utils.toDecimal(utils.hexToBinary(getR4()));
                 break;
-            case 5:  regData=toDecimal(hexToBinary(getR5()));
+            case 5:  regData=utils.toDecimal(utils.hexToBinary(getR5()));
                 break;
-            case 6: regData= toDecimal(hexToBinary(getR6()));
+            case 6: regData= utils.toDecimal(utils.hexToBinary(getR6()));
                 break;
-            case 7: regData= toDecimal(hexToBinary(getR7()));
+            case 7: regData= utils.toDecimal(utils.hexToBinary(getR7()));
                 break;
-            case 8: regData=toDecimal(hexToBinary(getR8()));
+            case 8: regData=utils.toDecimal(utils.hexToBinary(getR8()));
                 break;
-            case 9: regData=toDecimal(hexToBinary(getR9()));
+            case 9: regData=utils.toDecimal(utils.hexToBinary(getR9()));
                 break;
-            case 10:  regData=toDecimal(hexToBinary(getR10()));
+            case 10:  regData=utils.toDecimal(utils.hexToBinary(getR10()));
                 break;
-            case 11: regData=toDecimal(hexToBinary(getR11()));
+            case 11: regData=utils.toDecimal(utils.hexToBinary(getR11()));
                 break;
-            case 12:  regData=toDecimal(hexToBinary(getR12()));
+            case 12:  regData=utils.toDecimal(utils.hexToBinary(getR12()));
                 break;
-            case 13: regData=toDecimal(hexToBinary(getR13()));
+            case 13: regData=utils.toDecimal(utils.hexToBinary(getR13()));
                 break;
-            case 14: regData=toDecimal(hexToBinary(getR14()));
+            case 14: regData=utils.toDecimal(utils.hexToBinary(getR14()));
                 break;
-            case 15:  regData=toDecimal(hexToBinary(getR15()));
+            case 15:  regData=utils.toDecimal(utils.hexToBinary(getR15()));
                 break; }
 
 
@@ -523,10 +523,10 @@ public class CPU {
 
     public void execLDI (MMU mmu, String binaryInstruction) {
         String dReg = binaryInstruction.substring(12,16);
-        int dRegInt = toDecimal(dReg);
+        int dRegInt = utils.toDecimal(dReg);
         String address = binaryInstruction.substring(16,32);
-        int addressInt = toDecimal(address);
-        String addressHex = binaryToHex(address);
+        int addressInt = utils.toDecimal(address);
+        String addressHex = utils.binaryToHex(address);
         char[] data = new char[8]; //Creation of store for length 8 address
         int counter = 0;
         for (int i = 0; i < 8; i++) { //Turns length 4 address into length 8 word
@@ -576,7 +576,7 @@ public class CPU {
 
     public void execSLT (String binaryInstruction) {
         String sReg1 = binaryInstruction.substring(8,12); //First register
-        int sReg1Int = toDecimal(sReg1); //First register turned into int
+        int sReg1Int = utils.toDecimal(sReg1); //First register turned into int
         char[] sReg1data = new char[8]; //Initialization of store for data for s register 1
         switch (sReg1Int) {
             case 0: sReg1data = getR0();
@@ -613,7 +613,7 @@ public class CPU {
                 break;
         }
         String sReg2 = binaryInstruction.substring(12,16); //Second register
-        int sReg2Int = toDecimal(sReg2); //Second register turned into int
+        int sReg2Int = utils.toDecimal(sReg2); //Second register turned into int
         char[] sReg2data = new char[8]; //Initialization of store for data for s register 1
         switch (sReg2Int) {
             case 0: sReg2data = getR0();
@@ -650,10 +650,10 @@ public class CPU {
                 break;
         }
         String dReg = binaryInstruction.substring(16,20); //Destination register for truth value
-        int dRegInt = toDecimal(dReg); //Destination register turned into int for later switch statement
+        int dRegInt = utils.toDecimal(dReg); //Destination register turned into int for later switch statement
         char [] truthValue = new char[8];
-        sReg1Int = toDecimal(hexToBinary(sReg1data));
-        sReg2Int = toDecimal(hexToBinary(sReg2data));
+        sReg1Int = utils.toDecimal(utils.hexToBinary(sReg1data));
+        sReg2Int = utils.toDecimal(utils.hexToBinary(sReg2data));
         if (sReg1Int > sReg2Int) {
             for (int i = 0; i < truthValue.length; i++) {
                 truthValue[i]='0';
@@ -745,7 +745,7 @@ public class CPU {
 
     public void execBNE (String binaryInstruction) {
         String bReg = binaryInstruction.substring(8,12); //grabs binary for base register
-        int bRegInt = toDecimal(bReg); //base register is stored as an int
+        int bRegInt = utils.toDecimal(bReg); //base register is stored as an int
         char[] bRegdata = new char[8]; //Initialization of a store for base register data
         switch (bRegInt) { //grabs base register data
             case 0: bRegdata = getR0();
@@ -782,7 +782,7 @@ public class CPU {
                 break;
         }
         String dReg = binaryInstruction.substring(12,16); //grabs binary for destination register from instruction
-        int dRegInt = toDecimal(dReg); //turns binary decimal register to int value
+        int dRegInt = utils.toDecimal(dReg); //turns binary decimal register to int value
         char[] dRegdata = new char[8]; //Initialization of a store for the destination register data
         switch (dRegInt) { //grabs data from destination register
             case 0: dRegdata = getR0();
@@ -818,135 +818,21 @@ public class CPU {
             case 15:  dRegdata = getR15();
                 break;
         }
-        bRegInt = toDecimal(hexToBinary(bRegdata)); //converts the data from the base register to an int
-        dRegInt = toDecimal(hexToBinary(dRegdata)); //converts the data from the destination register to an integer
+        bRegInt = utils.toDecimal(utils.hexToBinary(bRegdata)); //converts the data from the base register to an int
+        dRegInt = utils.toDecimal(utils.hexToBinary(dRegdata)); //converts the data from the destination register to an integer
         if (bRegInt != dRegInt) { //compares the data between the base and destination registers and changes the pcCounter to the address inside the instruction if their are equal
             String addressBinary = binaryInstruction.substring(16,32);
-            String addressHex = binaryToHex(addressBinary);
+            String addressHex = utils.binaryToHex(addressBinary);
             char[] data = new char[8]; //Creation of store for length 8 address
             for (int i = 0; i < 4; i++) { //Turns length 4 address into length 8 word
                     data[i] = addressHex.charAt(i);
             }
-            int replaceCounter = toDecimal(hexToBinary(data)); //turns the address into an int to be used as the program counter
+            int replaceCounter = utils.toDecimal(utils.hexToBinary(data)); //turns the address into an int to be used as the program counter
             pCounter = (replaceCounter*2); //sets the counter to the new address and is multiplied by two since each bit is 2 hex chars
         }
     }
 
-    public String binaryToHex (String binaryString) {
-        String hexString = "";
-        for (int i = 0; i < binaryString.length(); i+=4) {
-            String fourLength = "";
-            for (int j = i; j < i+4; j++) {
-                fourLength = fourLength + binaryString.charAt(j);
-            }
-            switch(fourLength){
-                case"0000":hexString+='0';
-                    break;
-                case"0001":hexString+='1';
-                    break;
-                case"0010":hexString+='2';
-                    break;
-                case"0011":hexString+='3';
-                    break;
-                case"0100":hexString+='4';
-                    break;
-                case"0101":hexString+='5';
-                    break;
-                case"0110":hexString+='6';
-                    break;
-                case"0111":hexString+='7';
-                    break;
-                case"1000":hexString+='8';
-                    break;
-                case"1001":hexString+='9';
-                    break;
-                case"1010":hexString+='A';
-                    break;
-                case"1011":hexString+='B';
-                    break;
-                case"1100":hexString+='C';
-                    break;
-                case"1101":hexString+='D';
-                    break;
-                case"1110":hexString+='E';
-                    break;
-                case"1111":hexString+='F';
-                    break;
-            }
-        }
-        return hexString;
-    }
 
-
-
-    public String getOpCode (String binaryString){
-        String binaryOpCode = "";
-        for (int i = 2; i < 8; i++) {
-            binaryOpCode += binaryString.charAt(i);
-        }
-        return binaryOpCode;
-    }
-
-    public String hexToBinary (char [] hexcode) {
-        String binaryString = "";
-        for (int i = 0; i < hexcode.length; i++){
-        switch(hexcode[i]){
-        case'0':binaryString+="0000";
-        break;
-        case'1':binaryString+="0001";
-        break;
-        case'2':binaryString+="0010";
-        break;
-        case'3':binaryString+="0011";
-        break;
-        case'4':binaryString+="0100";
-        break;
-        case'5':binaryString+="0101";
-        break;
-        case'6':binaryString+="0110";
-        break;
-        case'7':binaryString+="0111";
-        break;
-        case'8':binaryString+="1000";
-        break;
-        case'9':binaryString+="1001";
-        break;
-        case'A':binaryString+="1010";
-        break;
-        case'B':binaryString+="1011";
-        break;
-        case'C':binaryString+="1100";
-        break;
-        case'D':binaryString+="1101";
-        break;
-        case'E':binaryString+="1110";
-        break;
-        case'F':binaryString+="1111";
-        break;
-        }
-        }
-        return binaryString;
-    }
-
-    public int toDecimal (String myString)		// Convert binary to decimal, to call with myMemory.registers[x]
-    { // begins toDecimal
-
-        int myReturn = 0;
-        int counter = myString.length()-1;
-        int exponent = 0;
-
-        while (counter != -1)
-        { // begins while
-
-            if (myString.charAt(counter) == '1')
-                myReturn += Math.pow(2, exponent);
-            exponent++;
-            counter--;
-
-        } // ends while
-
-        return myReturn;
-    } // ends toDecimal
 
     public char[] getInstructions() {
         return instructions;
