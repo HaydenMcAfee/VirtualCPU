@@ -213,7 +213,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1583735168852" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1583735441849" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -317,6 +317,10 @@
     <MESSAGE value="Final commit" />
     <MESSAGE value="New additions - MMU completed. Driver on its way, loader completed, process class built, pcb array of processes created and loaded with attributes." />
     <option name="LAST_COMMIT_MESSAGE" value="New additions - MMU completed. Driver on its way, loader completed, process class built, pcb array of processes created and loaded with attributes." />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
     <entry file="jar://C:/Program Files/Java/jdk-10.0.2/lib/src.zip!/java.base/java/io/Writer.java">
